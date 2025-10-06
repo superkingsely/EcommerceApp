@@ -1,0 +1,25 @@
+
+
+🗄️ PHASE 4 — Infrastructure Layer
+🎯 Responsibilities
+
+Database (EF Core)
+
+Repository implementations
+
+Identity & JWT auth
+
+Email & file storage services
+
+Example:
+
+Infrastructure/
+ ├── Persistence/
+ │   ├── ECommerceDbContext.cs
+ │   ├── Repository/
+ ├── Identity/
+ │   ├── JwtTokenService.cs
+ ├── Services/
+ │   ├── EmailService.cs
+
+🌐 PHASE 5 — API Layer

@@ -1,0 +1,33 @@
+
+
+🌐 PHASE 5 — API Layer
+✅ Responsibilities
+
+Controllers
+
+Middlewares
+
+Swagger setup
+
+Exception handling
+
+Example controller:
+
+[ApiController]
+[Route("api/[controller]")]
+public class ProductsController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public ProductsController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id }, id);
+    }
+}

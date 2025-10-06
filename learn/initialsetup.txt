@@ -1,0 +1,13 @@
+
+dotnet new sln -n ECommerce
+src/
+dotnet new classlib -n ECommerce.Domain
+dotnet new classlib -n ECommerce.Application
+dotnet new classlib -n ECommerce.Infrastructure
+dotnet new webapi -n ECommerce.API
+
+dotnet sln add src/ECommerce.Domain src/ECommerce.Application src/ECommerce.Infrastructure src/ECommerce.API
+
+dotnet add ECommerce.Application reference ECommerce.Domain
+dotnet add ECommerce.Infrastructure reference ECommerce.Application ECommerce.Domain
+dotnet add ECommerce.API reference ECommerce.Application ECommerce.Infrastructure

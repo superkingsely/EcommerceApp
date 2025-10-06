@@ -1,0 +1,11 @@
+
+
+| Feature                   | Description                                  |
+| ------------------------- | -------------------------------------------- |
+| 🧾 Pagination & Filtering | Implement generic helpers for large datasets |
+| 🧰 Caching                | Use Redis for caching product lists          |
+| 💳 Payment                | Integrate Stripe or PayPal SDK               |
+| 📬 Email Notifications    | Send order confirmation                      |
+| 🧮 Logging                | Add Serilog to capture API requests          |
+| 🧱 Global Exception       | Use middleware for error consistency         |
+| 🧾 Swagger                | Include versioning + authentication UI       |

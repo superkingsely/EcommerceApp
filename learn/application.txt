@@ -1,0 +1,32 @@
+
+
+⚙️ PHASE 3 — Application Layer (Business Logic)
+🧠 Core Features
+
+DTOs for requests/responses
+
+CQRS with MediatR (Command + Query)
+
+Validation with FluentValidation
+
+Mapping using AutoMapper
+
+Example structure:
+
+Application/
+ ├── Features/
+ │   ├── Products/
+ │   │   ├── Commands/
+ │   │   ├── Queries/
+ │   │   └── Dtos/
+ │   ├── Orders/
+ │   ├── Auth/
+ ├── Interfaces/
+ └── Behaviours/
+
+
+Example CQRS Command:
+
+public record CreateProductCommand(string Name, decimal Price, Guid CategoryId) : IRequest<Guid>;
+
+🗄️ PHASE 4 — Infrastructure Layer

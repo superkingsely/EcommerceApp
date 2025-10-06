@@ -1,0 +1,7 @@
+🔐 PHASE 6 — Authentication & Authorization
+
+Use ASP.NET Core Identity for user management.
+
+Generate JWT tokens for API access.
+
+Add Role-based Authorization (Admin, Customer).
