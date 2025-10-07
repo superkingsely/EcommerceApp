@@ -2,6 +2,11 @@
 using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
+
+// ➡️ This is a generic data seeder, meant for initial dummy data.
+// It uses EnsureCreatedAsync() and works fine when you don’t use EF Migrations (for fast demos or prototypes).
+
+
 namespace ECommerce.Infrastructure.Persistence
 {
     public static class AppDbContextSeed

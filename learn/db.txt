@@ -10,3 +10,8 @@ dotnet ef migrations add InitialCreate -p ../ECommerce.Infrastructure/ -s ../ECo
 ordotnet ef migrations add InitialCreate -p src/ECommerce.Infrastructure/ -s src/ECommerce.API/
 
 dotnet ef database update -p src/ECommerce.Infrastructure/ -s src/ECommerce.API/
+
+#########################################################
+select * from Users;
+select * from Categories;
+select * from Products;
