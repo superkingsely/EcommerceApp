@@ -1,0 +1,12 @@
+dotnet nuget locals all --clear
+dotnet restore
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet ef migrations add InitialCreate -p ../ECommerce.Infrastructure/ -s ../ECommerce.API/
+ordotnet ef migrations add InitialCreate -p src/ECommerce.Infrastructure/ -s src/ECommerce.API/
+
+dotnet ef database update -p src/ECommerce.Infrastructure/ -s src/ECommerce.API/
