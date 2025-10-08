@@ -24,7 +24,7 @@ namespace ECommerce.Infrastructure.Persistence
                     // Insert new users
                     var users = new[]
                     {
-                        new User { FullName = "Pauljohn Doe", Email = "john@example.com", PasswordHash = "hashed-password" },
+                        new User { FullName = "Paul Doe", Email = "john@example.com", PasswordHash = "hashed-password" },
                         new User { FullName = "Jane Smith", Email = "jane@example.com", PasswordHash = "hashed-password" }
                     };
                     await context.Users.AddRangeAsync(users);
@@ -34,14 +34,15 @@ namespace ECommerce.Infrastructure.Persistence
                 else
                 {
                     // Update existing user info
-                    if (john.FullName != "Paul Doe")
+                    if (john.FullName != "Pauljj Doe")
                     {
-                        john.FullName = "Paul Doe";
+                        john.FullName = "Pauljj Doe";
                         await context.SaveChangesAsync();
-                        logger.LogInformation("👤 Existing user updated to Paul Doe.");
+                        logger.LogInformation("👤 Existing user updated to Pauljj Doe.");
                     }
                     else
-                    {
+                    {   
+                        
                         logger.LogInformation("👤 User already up to date.");
                     }
                 }
