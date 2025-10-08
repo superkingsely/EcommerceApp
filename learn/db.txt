@@ -15,3 +15,14 @@ dotnet ef database update -p src/ECommerce.Infrastructure/ -s src/ECommerce.API/
 select * from Users;
 select * from Categories;
 select * from Products;
+#########################################
+
+dotnet ef migrations add init
+dotnet ef database update
+
+dotnet ef database drop
+
+#################
+DESKTOP-7PIV6BA\SQLEXPRESS didn’t work — probably because the instance name was different, or TCP/IP wasn’t properly configured.
+
+. uses the default local instance, so your app was able to connect immediately.

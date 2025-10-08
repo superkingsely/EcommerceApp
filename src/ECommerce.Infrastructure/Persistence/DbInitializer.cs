@@ -1,9 +1,8 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-
-using System.Linq;
 using ECommerce.Domain.Entities;
 
 namespace ECommerce.Infrastructure.Persistence
@@ -14,71 +13,95 @@ namespace ECommerce.Infrastructure.Persistence
         {
             try
             {
-                // Apply pending migrations
+                // ✅ 1. Apply all pending migrations
                 await context.Database.MigrateAsync();
+                logger.LogInformation("✅ Database migration applied successfully.");
 
-                // ✅ Seed only if no data exists
-                if (!context.Users.Any())
+                // 🧑‍💻 2. Seed USERS (Insert or Update)
+                var john = await context.Users.FirstOrDefaultAsync(u => u.Email == "john@example.com");
+                if (john == null)
                 {
-                    logger.LogInformation("Seeding initial data...");
-
-                    // --- USERS ---
+                    // Insert new users
                     var users = new[]
                     {
-                        new User { FullName = "John Doe", Email = "john@example.com", PasswordHash = "hashed-password" },
-                        new User { FullName = "Jane     Smith", Email = "jane@example.com", PasswordHash = "hashed-password" }
+                        new User { FullName = "Pauljohn Doe", Email = "john@example.com", PasswordHash = "hashed-password" },
+                        new User { FullName = "Jane Smith", Email = "jane@example.com", PasswordHash = "hashed-password" }
                     };
                     await context.Users.AddRangeAsync(users);
                     await context.SaveChangesAsync();
-
-                    // --- CATEGORIES ---
-                    var categories = new[]
-                    {
-                        new Category { Name = "Electronics" },
-                        new Category { Name = "Fashion" },
-                        new Category { Name = "Books" }
-                    };
-                    await context.Categories.AddRangeAsync(categories);
-                    await context.SaveChangesAsync();
-
-                    // --- PRODUCTS ---
-                    var products = new[]
-                    {
-                        new Product { Name = "Smartphone", Description = "Latest Android smartphone", Price = 599.99m, CategoryId = categories[0].Id },
-                        new Product { Name = "Headphones", Description = "Wireless noise-cancelling headphones", Price = 199.99m, CategoryId = categories[0].Id },
-                        new Product { Name = "T-Shirt", Description = "100% cotton T-shirt", Price = 25.99m, CategoryId = categories[1].Id },
-                        new Product { Name = "Novel", Description = "Bestselling fiction novel", Price = 15.49m, CategoryId = categories[2].Id }
-                    };
-                    await context.Products.AddRangeAsync(products);
-                    await context.SaveChangesAsync();
-
-                    logger.LogInformation("✅ Seeding completed successfully.");
+                    logger.LogInformation("👤 Users seeded successfully.");
                 }
                 else
                 {
-                    logger.LogInformation("Database already seeded.");
+                    // Update existing user info
+                    if (john.FullName != "Paul Doe")
+                    {
+                        john.FullName = "Paul Doe";
+                        await context.SaveChangesAsync();
+                        logger.LogInformation("👤 Existing user updated to Paul Doe.");
+                    }
+                    else
+                    {
+                        logger.LogInformation("👤 User already up to date.");
+                    }
                 }
+
+                // 🏷️ 3. Seed CATEGORIES if none exist
+                if (!await context.Categories.AnyAsync())
+                {
+                    var categories = new[]
+                    {
+                        new Category { Name = "Electronics", Description = "Phones, gadgets & more" },
+                        new Category { Name = "Fashion", Description = "Clothing & accessories" },
+                        new Category { Name = "Books", Description = "Books & literature" }
+                    };
+                    await context.Categories.AddRangeAsync(categories);
+                    await context.SaveChangesAsync();
+                    logger.LogInformation("🏷️ Categories seeded successfully.");
+                }
+                else
+                {
+                    logger.LogInformation("🏷️ Categories already exist.");
+                }
+
+                // 📦 4. Seed PRODUCTS if none exist
+                if (!await context.Products.AnyAsync())
+                {
+                    var electronics = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Electronics");
+                    var fashion = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Fashion");
+                    var books = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Books");
+
+                    if (electronics == null || fashion == null || books == null)
+                    {
+                        logger.LogWarning("⚠️ One or more required categories not found. Product seeding skipped.");
+                    }
+                    else
+                    {
+                        var products = new[]
+                        {
+                            new Product { Name = "Smartphone", Description = "Latest Android smartphone", Price = 599.99m, CategoryId = electronics.Id },
+                            new Product { Name = "Headphones", Description = "Wireless noise-cancelling headphones", Price = 199.99m, CategoryId = electronics.Id },
+                            new Product { Name = "T-Shirt", Description = "100% cotton T-shirt", Price = 25.99m, CategoryId = fashion.Id },
+                            new Product { Name = "Novel", Description = "Bestselling fiction novel", Price = 15.49m, CategoryId = books.Id }
+                        };
+
+                        await context.Products.AddRangeAsync(products);
+                        await context.SaveChangesAsync();
+                        logger.LogInformation("📦 Products seeded successfully.");
+                    }
+                }
+                else
+                {
+                    logger.LogInformation("📦 Products already exist.");
+                }
+
+                logger.LogInformation("🎉 Database seeding completed successfully.");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "❌ An error occurred while initializing the database.");
+                logger.LogError(ex, "❌ An error occurred during database initialization.");
                 throw;
             }
         }
     }
 }
-
-
-
-
-// namespace Ecommerce.Infrastructure.Persistence
-// {
-//     public static class DbInitializer
-//     {
-//         public static async Task InitializeAsync(AppDbContext context)
-//         {
-//             await context.Database.MigrateAsync();
-//             await AppDbContextSeed.SeedAsync(context);
-//         }
-//     }
-// }

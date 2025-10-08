@@ -17,14 +17,27 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ✅ Apply database migrations and seed
+
+
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
+    var logger = services.GetRequiredService<ILogger<Program>>();
     await DbInitializer.InitializeAsync(context, logger);
+
+    // await SeedData.SeedAsync(context, services);
 }
+
+// ✅ Apply database migrations and seed
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+//     await DbInitializer.InitializeAsync(context, logger);
+// }
 
 // // ✅ Run migrations and seed data automatically
 // using (var scope = app.Services.CreateScope())
