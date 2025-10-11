@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using ECommerce.Application.Interfaces.Repositories;
+using ECommerce.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ✅ Configure EF Core
@@ -14,6 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ✅ Add repositories
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

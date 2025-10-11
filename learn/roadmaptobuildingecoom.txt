@@ -83,3 +83,26 @@ Test controllers (done for User) ✅
 🔐 Add Authentication & Authorization
 
 🛍️ Implement real e-commerce features (checkout, cart, etc.)
+
+###########################################
+✅ Suggested order for your project now:
+
+Add Repository Layer.
+
+Add Service Layer.
+
+Use DTOs + AutoMapper.
+
+Add Authentication with JWT.
+
+Add Validations.
+
+Start frontend integration.
+##################################################
+🧠 2. ❌ (No Traditional Service Layer) — ✅ Use MediatR Handlers
+
+Instead of writing a ProductService or OrderService, you’ll create Handlers for each Command and Query.
+
+Commands = Write operations (e.g., Create, Update, Delete)
+
+Queries = Read operations (e.g., Get by Id, Get all)

@@ -30,7 +30,7 @@ namespace ECommerce.API.Controllers
 
         // ✅ GET: api/Orders/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<Order>> GetOrder(Guid id)
         {
             var order = await _context.Orders
                 .Include(o => o.User)
@@ -52,7 +52,7 @@ namespace ECommerce.API.Controllers
 
         // ✅ PUT: api/Orders/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, Order order)
+        public async Task<IActionResult> UpdateOrder(Guid id, Order order)
         {
             if (id != order.Id) return BadRequest();
 
@@ -63,7 +63,7 @@ namespace ECommerce.API.Controllers
 
         // ✅ DELETE: api/Orders/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        public async Task<IActionResult> DeleteOrder(Guid id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null) return NotFound();

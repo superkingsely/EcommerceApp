@@ -26,7 +26,7 @@ namespace ECommerce.API.Controllers
 
         // ✅ GET: api/Categories/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<Category>> GetCategory(Guid id)
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return NotFound();
@@ -44,7 +44,7 @@ namespace ECommerce.API.Controllers
 
         // ✅ PUT: api/Categories/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, Category category)
+        public async Task<IActionResult> UpdateCategory(Guid id, Category category)
         {
             if (id != category.Id) return BadRequest();
 
@@ -55,7 +55,7 @@ namespace ECommerce.API.Controllers
 
         // ✅ DELETE: api/Categories/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return NotFound();
