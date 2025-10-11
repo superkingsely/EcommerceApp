@@ -1,7 +1,8 @@
 
+
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ECommerce.Infrastructure.Persistence;
+using ECommerce.Application.Interfaces.Repositories;
 using ECommerce.Domain.Entities;
 
 namespace ECommerce.API.Controllers
@@ -10,59 +11,145 @@ namespace ECommerce.API.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoriesController(AppDbContext context)
+        public CategoriesController(ICategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
         }
 
-        // ✅ GET: api/Categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return Ok(await _context.Categories.ToListAsync());
+            var categories = await _categoryRepository.GetAllAsync();
+            return Ok(categories);
         }
 
-        // ✅ GET: api/Categories/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(Guid id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetByIdAsync(id);
             if (category == null) return NotFound();
             return Ok(category);
         }
 
-        // ✅ POST: api/Categories
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(Category category)
+        public async Task<ActionResult> CreateCategory(Category category)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+            await _categoryRepository.AddAsync(category);
             return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
         }
 
-        // ✅ PUT: api/Categories/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(Guid id, Category category)
+        public async Task<ActionResult> UpdateCategory(Guid id, Category category)
         {
             if (id != category.Id) return BadRequest();
 
-            _context.Entry(category).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            var existing = await _categoryRepository.GetByIdAsync(id);
+            if (existing == null) return NotFound();
+
+            existing.Name = category.Name;
+            existing.Description = category.Description;
+
+            await _categoryRepository.UpdateAsync(existing);
             return NoContent();
         }
 
-        // ✅ DELETE: api/Categories/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(Guid id)
+        public async Task<ActionResult> DeleteCategory(Guid id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
+            var existing = await _categoryRepository.GetByIdAsync(id);
+            if (existing == null) return NotFound();
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            await _categoryRepository.DeleteAsync(existing);
             return NoContent();
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// using Microsoft.AspNetCore.Mvc;
+// using Microsoft.EntityFrameworkCore;
+// using ECommerce.Infrastructure.Persistence;
+// using ECommerce.Domain.Entities;
+
+// namespace ECommerce.API.Controllers
+// {
+//     [Route("api/[controller]")]
+//     [ApiController]
+//     public class CategoriesController : ControllerBase
+//     {
+//         private readonly AppDbContext _context;
+
+//         public CategoriesController(AppDbContext context)
+//         {
+//             _context = context;
+//         }
+
+//         // ✅ GET: api/Categories
+//         [HttpGet]
+//         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+//         {
+//             return Ok(await _context.Categories.ToListAsync());
+//         }
+
+//         // ✅ GET: api/Categories/{id}
+//         [HttpGet("{id}")]
+//         public async Task<ActionResult<Category>> GetCategory(Guid id)
+//         {
+//             var category = await _context.Categories.FindAsync(id);
+//             if (category == null) return NotFound();
+//             return Ok(category);
+//         }
+
+//         // ✅ POST: api/Categories
+//         [HttpPost]
+//         public async Task<ActionResult<Category>> CreateCategory(Category category)
+//         {
+//             _context.Categories.Add(category);
+//             await _context.SaveChangesAsync();
+//             return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
+//         }
+
+//         // ✅ PUT: api/Categories/{id}
+//         [HttpPut("{id}")]
+//         public async Task<IActionResult> UpdateCategory(Guid id, Category category)
+//         {
+//             if (id != category.Id) return BadRequest();
+
+//             _context.Entry(category).State = EntityState.Modified;
+//             await _context.SaveChangesAsync();
+//             return NoContent();
+//         }
+
+//         // ✅ DELETE: api/Categories/{id}
+//         [HttpDelete("{id}")]
+//         public async Task<IActionResult> DeleteCategory(Guid id)
+//         {
+//             var category = await _context.Categories.FindAsync(id);
+//             if (category == null) return NotFound();
+
+//             _context.Categories.Remove(category);
+//             await _context.SaveChangesAsync();
+//             return NoContent();
+//         }
+//     }
+// }
