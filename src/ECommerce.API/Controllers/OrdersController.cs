@@ -1,7 +1,7 @@
 
 
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.Application.Interfaces.Repositories;
+using ECommerce.Application.Interfaces.Services;
 using ECommerce.Domain.Entities;
 
 namespace ECommerce.API.Controllers
@@ -10,63 +10,126 @@ namespace ECommerce.API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderService _orderService;
 
-        public OrdersController(IOrderRepository orderRepository)
+        public OrdersController(IOrderService orderService)
         {
-            _orderRepository = orderRepository;
+            _orderService = orderService;
         }
 
+        // ✅ GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            var orders = await _orderRepository.GetAllAsync();
+            var orders = await _orderService.GetAllAsync();
             return Ok(orders);
         }
 
+        // ✅ GET: api/Orders/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(Guid id)
         {
-            var order = await _orderRepository.GetByIdAsync(id);
+            var order = await _orderService.GetByIdAsync(id);
             if (order == null) return NotFound();
             return Ok(order);
         }
 
+        // ✅ POST: api/Orders
         [HttpPost]
         public async Task<ActionResult> CreateOrder(Order order)
         {
-            await _orderRepository.AddAsync(order);
-            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+            var created = await _orderService.CreateAsync(order);
+            return CreatedAtAction(nameof(GetOrder), new { id = created.Id }, created);
         }
 
+        // ✅ PUT: api/Orders/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateOrder(Guid id, Order order)
         {
-            if (id != order.Id) return BadRequest();
-
-            var existing = await _orderRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
-            existing.TotalAmount = order.TotalAmount;
-            existing.UserId = order.UserId;
-            existing.OrderItems = order.OrderItems;
-            existing.Status = order.Status;
-
-            await _orderRepository.UpdateAsync(existing);
-            return NoContent();
+            var updated = await _orderService.UpdateAsync(id, order);
+            return Ok(updated);
         }
 
+        // ✅ DELETE: api/Orders/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(Guid id)
         {
-            var existing = await _orderRepository.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-
-            await _orderRepository.DeleteAsync(existing);
+            var deleted = await _orderService.DeleteAsync(id);
+            if (!deleted) return NotFound();
             return NoContent();
         }
     }
 }
+
+
+
+// using Microsoft.AspNetCore.Mvc;
+// using ECommerce.Application.Interfaces.Repositories;
+// using ECommerce.Domain.Entities;
+
+// namespace ECommerce.API.Controllers
+// {
+//     [Route("api/[controller]")]
+//     [ApiController]
+//     public class OrdersController : ControllerBase
+//     {
+//         private readonly IOrderRepository _orderRepository;
+
+//         public OrdersController(IOrderRepository orderRepository)
+//         {
+//             _orderRepository = orderRepository;
+//         }
+
+//         [HttpGet]
+//         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+//         {
+//             var orders = await _orderRepository.GetAllAsync();
+//             return Ok(orders);
+//         }
+
+//         [HttpGet("{id}")]
+//         public async Task<ActionResult<Order>> GetOrder(Guid id)
+//         {
+//             var order = await _orderRepository.GetByIdAsync(id);
+//             if (order == null) return NotFound();
+//             return Ok(order);
+//         }
+
+//         [HttpPost]
+//         public async Task<ActionResult> CreateOrder(Order order)
+//         {
+//             await _orderRepository.AddAsync(order);
+//             return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+//         }
+
+//         [HttpPut("{id}")]
+//         public async Task<ActionResult> UpdateOrder(Guid id, Order order)
+//         {
+//             if (id != order.Id) return BadRequest();
+
+//             var existing = await _orderRepository.GetByIdAsync(id);
+//             if (existing == null) return NotFound();
+
+//             existing.TotalAmount = order.TotalAmount;
+//             existing.UserId = order.UserId;
+//             existing.OrderItems = order.OrderItems;
+//             existing.Status = order.Status;
+
+//             await _orderRepository.UpdateAsync(existing);
+//             return NoContent();
+//         }
+
+//         [HttpDelete("{id}")]
+//         public async Task<ActionResult> DeleteOrder(Guid id)
+//         {
+//             var existing = await _orderRepository.GetByIdAsync(id);
+//             if (existing == null) return NotFound();
+
+//             await _orderRepository.DeleteAsync(existing);
+//             return NoContent();
+//         }
+//     }
+// }
 
 
 
